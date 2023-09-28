@@ -121,16 +121,10 @@ def main(options):
     lines = []
     cleanup = []
     for dev in devices:
-        while True:
-            try:
-                device = getDevice(fmc, dev['id'])
-                logging.debug("JSON:\n" + _format(device))
-                lines.append(device)
-                break
-            except HTTPError as e:
-                if e.response.status_code == 429:
-                    logging.error(f"Rate Limit Hit : backing off {options.retry_timer} secs")
-                    time.sleep(options.retry_timer)
+        device = getDevice(fmc, dev['id'])
+        logging.debug("JSON:\n" + _format(device))
+        lines.append(device)
+
 
     if len(lines) == 0:
         logging.fatal("No registered devices detected")

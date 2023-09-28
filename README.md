@@ -40,17 +40,16 @@ Note: Only tested on linux with python3.8 and python 3.10
 ### CLI output
 
     λ  python3 list_devices.py -f HOSTNAME -u USERNAME -p PASSWORD
-    2023-09-28 00:22:19 INFO Connecting to FMC... (10.12.48.64)
-    2023-09-28 00:22:22 INFO Time elapsed for session establishment: 2.4 secs
-    2023-09-28 00:22:22 INFO Loading devices list from FMC
-    2023-09-28 00:22:26 INFO Time elapsed loading devices list from FMC: 2.4 secs
-    2023-09-28 00:22:26 INFO Loading devices details from FMC for 200 devices
-    2023-09-28 00:22:50 ERROR Error in connection --> 429 Client Error: 429 for url: URL_REDACTED
-    2023-09-28 00:22:50 ERROR Rate Limit Hit : backing off 60 secs
-    2023-09-28 00:24:09 INFO Loaded 200 devices
-    2023-09-28 00:24:09 INFO Time elapsed loading device details from FMC: 102.8 secs
-    2023-09-28 00:24:09 INFO Writing devices to CSV file (./output.csv)
-    2023-09-28 00:24:09 INFO Time elapsed for writing CSV file: 0.0 secs
+    2023-09-28 20:40:30 INFO Connecting to FMC... (HOSTNAME)
+    2023-09-28 20:40:32 INFO Time elapsed for session establishment: 2.5 secs
+    2023-09-28 20:40:32 INFO Loading devices list from FMC
+    2023-09-28 20:40:36 INFO Time elapsed loading devices list from FMC: 2.5 secs
+    2023-09-28 20:40:36 INFO Loading devices details from FMC for 200 devices
+    2023-09-28 20:41:00 WARNING Rate Limit hit : 60 sec backoff triggered
+    2023-09-28 20:42:18 INFO Loaded 200 devices
+    2023-09-28 20:42:18 INFO Time elapsed loading device details from FMC: 102.2 secs
+    2023-09-28 20:42:18 INFO Writing devices to CSV file (./output.csv)
+    2023-09-28 20:42:18 INFO Time elapsed for writing CSV file: 0.0 secs
 
 Note in the above example the FMC API rate limit was hit. The rate limit is 120 API calls per minute. This FMC has 200 devices that we needed to loop through to get detailed information about each. Thus we were forced to wait 60 seconds before continuing. 
 
