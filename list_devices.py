@@ -102,6 +102,7 @@ def main(options):
 
     # Connect to the FMC RestAPI
     start = time.time()
+    begin = start
     logging.info(f'Connecting to FMC... ({options.hostname})')
     fmc = FMCRest(options.hostname, options.username, options.password)
     logging.debug(f"Connected. Session ({fmc.session.headers['X-auth-access-token']})")
@@ -117,11 +118,10 @@ def main(options):
 
 
     start = time.time()
-    logging.info(f"Loading devices details from FMC for {len(devices)} devices")
+    logging.info(f"Processing device records for {len(devices)} devices")
     lines = []
-    cleanup = []
     for dev in devices:
-        device = getDevice(fmc, dev['id'])
+        device = flattenDevice(dev)
         logging.debug("JSON:\n" + _format(device))
         lines.append(device)
 
@@ -129,14 +129,9 @@ def main(options):
     if len(lines) == 0:
         logging.fatal("No registered devices detected")
         exit(1)
-    logging.info(f"Loaded {len(lines)} devices")
-    elapsed = time.time() - start
-    logging.info('Time elapsed loading device details from FMC: %1.1f secs', elapsed)
 
 
     # Output CSV file
-    start = time.time()
-    logging.info(f"Writing devices to CSV file ({options.outfile})")
     fields = list(lines[0].keys())
     fields.sort()
     with open(options.outfile, 'w') as csvfile:
@@ -145,7 +140,8 @@ def main(options):
         writer.writerows(lines)
 
     elapsed = time.time() - start
-    logging.info('Time elapsed for writing CSV file: %1.1f secs', elapsed)
+    logging.info('Time elapsed for processing device records: %1.1f secs', elapsed)
+    logging.info('Total time elapsed: %1.1f secs', time.time() - begin)
 
 
 def getDeviceList(fmc, options):
@@ -155,7 +151,7 @@ def getDeviceList(fmc, options):
 
     # Unspool the pagination
     while True:
-        resp = fmc.get(f"/devices/devicerecords?offset={offset}&limit={options.result_limit}")
+        resp = fmc.get(f"/devices/devicerecords?expanded=true&offset={offset}&limit={options.result_limit}")
         logging.debug(_format(resp))
         rval = rval + resp['items']
         if 'paging' not in resp or 'next' not in resp['paging']:
@@ -165,8 +161,7 @@ def getDeviceList(fmc, options):
 
     return rval
 
-def getDevice(fmc,id):
-    device = fmc.get(f"/devices/devicerecords/{id}")
+def flattenDevice(device):
 
     # Flatten the device record for CSV output
     if 'accessPolicy' in device:
@@ -213,7 +208,6 @@ def getDevice(fmc,id):
         del device['isFWaaS']
 
     return device
-
 
 if __name__ == '__main__':
     main(init())
