@@ -6,7 +6,7 @@ Simple Python 3 script to dump the list of managed devices from Cisco Secure Fir
 
 Note: Only tested on linux with python3.8 and python 3.10
 
-- Check out this repo: `git clone git@github.com:satchm0h/device_list.git`
+- Check out this repo: `git clone https://github.com/satchm0h/list_devices.git`
 - `cd` into the `device_list` directory
 - Run `python3 -m venv venv` to create a virtual environment
 - Run `source venv/bin/activate` to activate the virtual environment
